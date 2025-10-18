@@ -2,8 +2,7 @@
 
 Esse projeto foi criado usando [Angular CLI](https://github.com/angular/angular-cli) versão 20.3.4.
 
-
-# Aplicação de Busca por CEP
+## Aplicação de Busca por CEP
 
 Este projeto é uma aplicação web desenvolvida em **Angular**, que permite buscar informações de um CEP no Brasil e consultar a **temperatura e clima da cidade** utilizando a API **OpenWeather**. O design é moderno e responsivo, com suporte a **dark mode**, utilizando **TailwindCSS**.
 
