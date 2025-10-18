@@ -1,0 +1,49 @@
+<div class="flex flex-col items-center justify-start min-h-screen bg-gray-900 text-white py-12 px-4">
+  <h1 class="text-3xl font-bold mb-8 text-white drop-shadow-lg">
+    Digite um CEP
+  </h1>
+
+  <form class="bg-gray-800/80 backdrop-blur-md rounded-2xl shadow-2xl p-8 w-full max-w-md flex flex-col gap-6" (submit)="loadCep()">
+
+    <input
+      type="text"
+      [(ngModel)]="cepDigitado"
+      name="myInputName"
+      placeholder="Digite o CEP"
+      class="px-4 py-3 border border-gray-600 rounded-lg bg-gray-900 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
+    >
+
+    <button
+      type="submit"
+      class="bg-indigo-600 text-white font-semibold px-4 py-3 rounded-lg hover:bg-indigo-700 transition shadow-lg"
+    >
+      Buscar CEP
+    </button>
+
+    <!-- Card de informações do CEP -->
+    @if (cep) {
+      <div class="bg-gray-700/60 p-4 rounded-lg shadow-inner space-y-2 border border-gray-600">
+        <p><strong>CEP:</strong> {{ cep.cep }}</p>
+        <p><strong>DDD:</strong> {{ cep.ddd }}</p>
+        <p><strong>UF:</strong> {{ cep.uf }}</p>
+        <p><strong>Cidade:</strong> {{ cep.localidade }}</p>
+        <p><strong>Bairro:</strong> {{ cep.bairro }}</p>
+        <p><strong>Logradouro:</strong> {{ cep.logradouro }}</p>
+        <p><strong>Complemento:</strong> {{ cep.complemento || 'Nenhum' }}</p>
+      </div>
+    }
+
+    <!-- Card de temperatura -->
+    @if (temperatura !== undefined) {
+      <div class="bg-gray-700/60 p-4 rounded-lg shadow-inner space-y-1 border border-gray-600 flex flex-col items-center">
+        <p class="text-lg font-semibold">
+          Temperatura: <span class="text-indigo-400">{{ temperatura }} °C</span>
+        </p>
+        <p class="text-md capitalize text-indigo-200">
+          Clima: {{ descricaoClima }}
+        </p>
+      </div>
+    }
+
+  </form>
+</div>
