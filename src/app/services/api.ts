@@ -7,7 +7,7 @@ import { cepObj } from '../search/search';
   providedIn: 'root'
 })
 export class Api {
-  apiKeyOpenWeather = 'd5e03a6afce0e141459f743fa0c7dff8';
+  apiKeyOpenWeather = 'SUA_CHAVE_AQUI';
 
   private cepBaseUrl = `https://viacep.com.br/ws/`;
   private tempBaseUrl = `https://api.openweathermap.org/data/2.5/weather`
