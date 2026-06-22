@@ -3,47 +3,250 @@
     Digite um CEP
   </h1>
 
-  <form class="bg-gray-800/80 backdrop-blur-md rounded-2xl shadow-2xl p-8 w-full max-w-md flex flex-col gap-6" (submit)="loadCep()">
+  <!-- Campo de busca -->
+  <form class="w-full max-w-md flex flex-col gap-4 mb-8" (submit)="loadCep()">
+    <div class="bg-gray-800/80 backdrop-blur-md rounded-2xl shadow-2xl p-8 flex flex-col gap-4">
+      <input
+        type="text"
+        [(ngModel)]="cepDigitado"
+        name="myInputName"
+        placeholder="Ex: 01001-000"
+        maxlength="9"
+        class="px-4 py-3 border border-gray-600 rounded-lg bg-gray-900 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
+      >
 
-    <input
-      type="text"
-      [(ngModel)]="cepDigitado"
-      name="myInputName"
-      placeholder="Digite o CEP"
-      class="px-4 py-3 border border-gray-600 rounded-lg bg-gray-900 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
-    >
+      <button
+        type="submit"
+        [disabled]="carregandoCep"
+        class="bg-indigo-600 text-white font-semibold px-4 py-3 rounded-lg hover:bg-indigo-700 transition shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+      >
+        @if (carregandoCep) {
+          <svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          Buscando...
+        } @else {
+          Buscar CEP
+        }
+      </button>
+    </div>
 
-    <button
-      type="submit"
-      class="bg-indigo-600 text-white font-semibold px-4 py-3 rounded-lg hover:bg-indigo-700 transition shadow-lg"
-    >
-      Buscar CEP
-    </button>
-
-    <!-- Card de informações do CEP -->
-    @if (cep) {
-      <div class="bg-gray-700/60 p-4 rounded-lg shadow-inner space-y-2 border border-gray-600">
-        <p><strong>CEP:</strong> {{ cep.cep }}</p>
-        <p><strong>DDD:</strong> {{ cep.ddd }}</p>
-        <p><strong>UF:</strong> {{ cep.uf }}</p>
-        <p><strong>Cidade:</strong> {{ cep.localidade }}</p>
-        <p><strong>Bairro:</strong> {{ cep.bairro }}</p>
-        <p><strong>Logradouro:</strong> {{ cep.logradouro }}</p>
-        <p><strong>Complemento:</strong> {{ cep.complemento || 'Nenhum' }}</p>
+    <!-- Erro de CEP -->
+    @if (erroCep) {
+      <div class="bg-red-900/60 border border-red-500/50 text-red-200 p-4 rounded-xl flex items-center gap-3 animate-fade-in">
+        <svg class="w-5 h-5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+        </svg>
+        <span>{{ erroCep }}</span>
       </div>
     }
 
-    <!-- Card de temperatura -->
-    @if (temperatura !== undefined) {
-      <div class="bg-gray-700/60 p-4 rounded-lg shadow-inner space-y-1 border border-gray-600 flex flex-col items-center">
-        <p class="text-lg font-semibold">
-          Temperatura: <span class="text-indigo-400">{{ temperatura }} °C</span>
-        </p>
-        <p class="text-md capitalize text-indigo-200">
-          Clima: {{ descricaoClima }}
-        </p>
+    <!-- Erro de clima -->
+    @if (erroClima) {
+      <div class="bg-amber-900/40 border border-amber-500/50 text-amber-200 p-4 rounded-xl flex items-center gap-3 animate-fade-in">
+        <svg class="w-5 h-5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+        </svg>
+        <span>{{ erroClima }}</span>
       </div>
     }
-
   </form>
+
+  <!-- Cards lado a lado -->
+  @if (cep || carregandoClima) {
+    <div class="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+
+      <!-- Card de informações do CEP -->
+      @if (cep) {
+        <div class="bg-gray-800/80 backdrop-blur-md rounded-2xl shadow-2xl p-6 space-y-3 border border-gray-700/50 animate-fade-in">
+          <div class="flex items-center gap-2 mb-4">
+            <svg class="w-5 h-5 text-indigo-400" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>
+            </svg>
+            <h2 class="text-lg font-semibold text-indigo-400">Endereço</h2>
+          </div>
+
+          <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+            <div>
+              <span class="text-gray-400">CEP</span>
+              <p class="font-medium">{{ cep.cep }}</p>
+            </div>
+            <div>
+              <span class="text-gray-400">DDD</span>
+              <p class="font-medium">{{ cep.ddd }}</p>
+            </div>
+            <div>
+              <span class="text-gray-400">Estado</span>
+              <p class="font-medium">{{ cep.estado }} ({{ cep.uf }})</p>
+            </div>
+            <div>
+              <span class="text-gray-400">Cidade</span>
+              <p class="font-medium">{{ cep.localidade }}</p>
+            </div>
+            <div class="col-span-2">
+              <span class="text-gray-400">Bairro</span>
+              <p class="font-medium">{{ cep.bairro || '—' }}</p>
+            </div>
+            <div class="col-span-2">
+              <span class="text-gray-400">Logradouro</span>
+              <p class="font-medium">{{ cep.logradouro || '—' }}</p>
+            </div>
+            @if (cep.complemento) {
+              <div class="col-span-2">
+                <span class="text-gray-400">Complemento</span>
+                <p class="font-medium">{{ cep.complemento }}</p>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Loading do clima -->
+      @if (carregandoClima) {
+        <div class="bg-gray-800/80 backdrop-blur-md rounded-2xl shadow-2xl p-8 flex flex-col items-center justify-center gap-3 border border-gray-700/50 animate-pulse min-h-[300px]">
+          <svg class="animate-spin h-8 w-8 text-indigo-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          <span class="text-gray-400 text-sm">Buscando informações meteorológicas...</span>
+        </div>
+      }
+
+      <!-- Card de clima -->
+      @if (clima) {
+        <div class="bg-gray-800/80 backdrop-blur-md rounded-2xl shadow-2xl border border-gray-700/50 overflow-hidden animate-fade-in">
+
+          <!-- Cabeçalho com temperatura principal -->
+          <div class="bg-gradient-to-r from-indigo-600/30 to-purple-600/30 p-6">
+            <div class="flex items-center justify-between">
+              <div>
+                <div class="flex items-center gap-2 mb-1">
+                  <svg class="w-5 h-5 text-indigo-300" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>
+                  </svg>
+                  <span class="text-indigo-300 text-sm font-medium">{{ clima.cidade }}</span>
+                </div>
+                <div class="text-5xl font-bold tracking-tight">
+                  {{ clima.temperatura }}°<span class="text-3xl text-gray-400">C</span>
+                </div>
+                <p class="text-gray-300 capitalize mt-1">{{ clima.descricao }}</p>
+              </div>
+              <img
+                [src]="clima.icone"
+                [alt]="clima.descricao"
+                class="w-20 h-20 drop-shadow-lg"
+              >
+            </div>
+
+            <!-- Min / Max -->
+            <div class="flex gap-4 mt-3 text-sm">
+              <span class="text-blue-300">
+                <svg class="w-4 h-4 inline mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M14.707 12.293a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 14.586V3a1 1 0 012 0v11.586l2.293-2.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                {{ clima.tempMin }}°C
+              </span>
+              <span class="text-orange-300">
+                <svg class="w-4 h-4 inline mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 7.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 5.414V17a1 1 0 11-2 0V5.414L6.707 7.707a1 1 0 01-1.414 0z" clip-rule="evenodd"/></svg>
+                {{ clima.tempMax }}°C
+              </span>
+            </div>
+          </div>
+
+          <!-- Grid de detalhes -->
+          <div class="p-6 grid grid-cols-2 gap-3">
+
+            <!-- Sensação Térmica -->
+            <div class="bg-gray-700/40 rounded-xl p-3 flex items-center gap-3">
+              <div class="bg-orange-500/20 rounded-lg p-2">
+                <svg class="w-5 h-5 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707"/>
+                </svg>
+              </div>
+              <div>
+                <span class="text-xs text-gray-400 block">Sensação</span>
+                <span class="font-semibold">{{ clima.sensacaoTermica }}°C</span>
+              </div>
+            </div>
+
+            <!-- Umidade -->
+            <div class="bg-gray-700/40 rounded-xl p-3 flex items-center gap-3">
+              <div class="bg-blue-500/20 rounded-lg p-2">
+                <svg class="w-5 h-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M7.293 1.5a1 1 0 011.414 0L10 2.793 11.293 1.5a1 1 0 111.414 1.414L10 5.621 7.293 2.914a1 1 0 010-1.414zM10 8a3 3 0 100 6 3 3 0 000-6zm-7 3a7 7 0 1114 0 7 7 0 01-14 0z" clip-rule="evenodd"/>
+                </svg>
+              </div>
+              <div>
+                <span class="text-xs text-gray-400 block">Umidade</span>
+                <span class="font-semibold">{{ clima.umidade }}%</span>
+              </div>
+            </div>
+
+            <!-- Vento -->
+            <div class="bg-gray-700/40 rounded-xl p-3 flex items-center gap-3">
+              <div class="bg-teal-500/20 rounded-lg p-2">
+                <svg class="w-5 h-5 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"/>
+                </svg>
+              </div>
+              <div>
+                <span class="text-xs text-gray-400 block">Vento</span>
+                <span class="font-semibold">{{ clima.ventoVelocidade }} km/h</span>
+              </div>
+            </div>
+
+            <!-- Pressão -->
+            <div class="bg-gray-700/40 rounded-xl p-3 flex items-center gap-3">
+              <div class="bg-purple-500/20 rounded-lg p-2">
+                <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                </svg>
+              </div>
+              <div>
+                <span class="text-xs text-gray-400 block">Pressão</span>
+                <span class="font-semibold">{{ clima.pressao }} hPa</span>
+              </div>
+            </div>
+
+            <!-- Nascer do Sol -->
+            <div class="bg-gray-700/40 rounded-xl p-3 flex items-center gap-3">
+              <div class="bg-yellow-500/20 rounded-lg p-2">
+                <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"/>
+                </svg>
+              </div>
+              <div>
+                <span class="text-xs text-gray-400 block">Nascer do sol</span>
+                <span class="font-semibold">{{ formatarHora(clima.nascerDoSol) }}</span>
+              </div>
+            </div>
+
+            <!-- Pôr do Sol -->
+            <div class="bg-gray-700/40 rounded-xl p-3 flex items-center gap-3">
+              <div class="bg-rose-500/20 rounded-lg p-2">
+                <svg class="w-5 h-5 text-rose-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/>
+                </svg>
+              </div>
+              <div>
+                <span class="text-xs text-gray-400 block">Pôr do sol</span>
+                <span class="font-semibold">{{ formatarHora(clima.porDoSol) }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Coordenadas -->
+          <div class="px-6 pb-5">
+            <div class="bg-gray-700/30 rounded-lg px-4 py-2 flex items-center justify-center gap-2 text-xs text-gray-400">
+              <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>
+              </svg>
+              <span>Lat: {{ clima.coordenadas.lat.toFixed(4) }} | Lon: {{ clima.coordenadas.lon.toFixed(4) }}</span>
+            </div>
+          </div>
+
+        </div>
+      }
+
+    </div>
+  }
 </div>

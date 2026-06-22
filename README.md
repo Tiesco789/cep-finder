@@ -86,3 +86,8 @@ A busca só funciona para CEPs válidos do Brasil.
 O serviço de temperatura depende da cidade retornada pelo ViaCEP.
 
 A aplicação utiliza TailwindCSS, então é necessário ter o PostCSS configurado no Angular.
+
+---
+
+Imagem:
+![Cep Finder](/img-readme/screenshot.png)
